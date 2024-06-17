@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Events</title>
+    <script>
+        async function fetchEvents() {
+            try {
+                // const response = await fetch('https://c317-2409-4071-e0b-8601-3c66-d625-39fd-f75d.ngrok-free.app/webhook/events');
+                const response= await fetch('http://127.0.0.1:5000/webhook/events')
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const events = await response.json();
+                const eventList = document.getElementById('event-list');
+                eventList.innerHTML = '';
+
+                events.forEach(event => {
+                    const li = document.createElement('li');
+                    li.textContent = `${event.author} ${event.action} to ${event.to_branch} on ${event.timestamp}`;
+                    eventList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        }
+
+        setInterval(fetchEvents, 15000); // Fetch events every 15 seconds
+        window.onload = fetchEvents;
+    </script>
+</head>
+<body>
+    <h1>GitHub Events</h1>
+    <ul id="event-list"></ul>
+</body>
+</html>
